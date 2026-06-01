@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dufil
 
 A full-stack web application with user authentication, dashboard, and item management built with Express, Next.js, and PostgreSQL.
