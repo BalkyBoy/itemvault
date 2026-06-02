@@ -20,7 +20,7 @@ export class ItemsService {
     const { page, limit, orderBy, orderDir, category, status, search } = query;
 
     return this.itemsRepo.findFiltered(
-      { category, status, search },
+      { category, search },
       { page, limit, orderBy, orderDir }
     );
   }

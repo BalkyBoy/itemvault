@@ -26,15 +26,17 @@ const itemCategorySchema = z
     `Category must be at most ${ITEM_CATEGORY_MAX_LENGTH} characters`
   );
 
-const itemStatusSchema = z.enum(['active', 'draft'], {
-  errorMap: () => ({ message: 'Status must be published or draft' }),
-});
+const itemStatusSchema = z
+  .enum(['active', 'draft', 'archived'] as const, {
+    message: 'Status must be active, draft, or archived',
+  })
+  .pipe(z.nativeEnum(ProductStatus));
 
 export const createItemSchema = z.object({
   name: itemNameSchema,
   description: itemDescriptionSchema,
   category: itemCategorySchema.optional().default(DEFAULT_ITEM_CATEGORY),
-  status: itemStatusSchema.optional().default('active'),
+  status: itemStatusSchema.optional().default(ProductStatus.ACTIVE),
 });
 
 export const updateItemSchema = z

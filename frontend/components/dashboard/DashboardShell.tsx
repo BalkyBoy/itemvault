@@ -8,8 +8,9 @@ import {
   PlusCircle,
   X,
   LogOut,
+  Menu,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState } from 'react'
 import { useAuth } from '@/context/AuthContext';
 
 const navItems = [
@@ -19,12 +20,15 @@ const navItems = [
 ];
 
 function NavLinks({ onNavigate, pathname }: { onNavigate?: () => void; pathname: string }) {
+  return (
     <>
       {navItems.map(({ href, label, icon: Icon }) => {
+        // Ensure exact matching for dashboard and items, or let sub-routes handle their own states
         const active =
-          href === '/dashboard'
+          href === '/dashboard' || href === '/dashboard/items'
             ? pathname === href
             : pathname.startsWith(href);
+
         return (
           <Link
             key={href}
@@ -42,6 +46,7 @@ function NavLinks({ onNavigate, pathname }: { onNavigate?: () => void; pathname:
         );
       })}
     </>
+  );
 }
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {

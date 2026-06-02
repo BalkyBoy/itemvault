@@ -19,11 +19,11 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"],
-      "@config/*": ["src/config/*"],
+      "@config/*": ["config/*"],
       "@models/*": ["models/*"],
       "@repositories/*": ["repositories/*"],
       "@modules/*": ["modules/*"],
-      "@shared/*": ["src/shared/*"],
+      "@shared/*": ["shared/*"],
       "@jobs/*": ["jobs/*"]
     }
   },

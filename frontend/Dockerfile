@@ -1,48 +1,44 @@
-FROM node:22-alpine AS deps
-WORKDIR /app
+FROM node:20-alpine AS base
 
+# Install dependencies only when needed
+FROM base AS deps
 RUN apk add --no-cache libc6-compat
-
-COPY package.json pnpm-lock.yaml* package-lock.json* yarn.lock* ./
-RUN \
-  if [ -f pnpm-lock.yaml ]; then \
-    corepack enable pnpm && pnpm config set fetch-timeout 120000 && pnpm i --frozen-lockfile --ignore-scripts; \
-  elif [ -f package-lock.json ]; then \
-    npm ci --ignore-scripts; \
-  else \
-    npm i --ignore-scripts; \
-  fi
-
-FROM node:22-alpine AS builder
 WORKDIR /app
 
-ENV CI=true
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Build stage
+FROM base AS builder
+WORKDIR /app
+
+# Build args
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+RUN npm run build
 
-RUN \
-  if [ -f pnpm-lock.yaml ]; then \
-    corepack enable pnpm && pnpm run build; \
-  else \
-    npm run build; \
-  fi
-
-
-FROM node:22-alpine AS runner
+# Production stage
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN apk add --no-cache dumb-init \
- && addgroup --system --gid 1001 nodejs \
- && adduser  --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+# Requires output: 'standalone' in next.config.js
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -53,5 +49,7 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-ENTRYPOINT ["dumb-init", "--"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"
+
 CMD ["node", "server.js"]

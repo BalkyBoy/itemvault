@@ -41,7 +41,7 @@ services:
       - dufil_dev
 
   frontend:
-    image: node:20-alpine
+    image: node:22-alpine
     working_dir: /app
     restart: unless-stopped
     command: sh -c "corepack enable pnpm && pnpm install && pnpm dev"
