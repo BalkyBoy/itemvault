@@ -5,7 +5,6 @@ import { Check, ChevronDown } from 'lucide-react';
 import { STATUS_FILTER_OPTIONS } from '@/lib/status';
 import type { ItemStatus } from '@/lib/types';
 
-// ─── Status config ────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<
   string,
@@ -28,7 +27,7 @@ const STATUS_CONFIG: Record<
   },
 };
 
-// ─── Props ────────────────────────────────────────────────────────────────────
+
 
 interface StatusSelectProps {
   value: ItemStatus | '';
@@ -40,7 +39,7 @@ interface StatusSelectProps {
   options?: { value: ItemStatus | ''; label: string }[];
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+
 
 export function StatusSelect({
   value,
