@@ -12,7 +12,10 @@ export async function initializeDatabase(): Promise<Knex.Knex> {
 
   knexInstance = Knex({
     client: 'pg',
-    connection: config.database.url,
+    connection: {
+      connectionString: config.database.url,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    },
     pool: {
       min: config.database.pool.min,
       max: config.database.pool.max,
