@@ -9,6 +9,12 @@ async function startServer(): Promise<void> {
         await initializeDatabase();
         logger.info('Database initialized');
 
+        const {getKnex} = await import('./database/index');
+        await getKnex().migrate.latest({
+            directory: './dist/database/migrations',
+        });
+        logger.info('Database migrations applied');
+
         registerDependencies();
         logger.info('Dependencies registered');
 
