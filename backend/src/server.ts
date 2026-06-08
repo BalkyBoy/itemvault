@@ -3,7 +3,6 @@ import { logger } from "./shared/logger";
 import { initializeDatabase, closeDatabase } from './database/index';
 import { config } from "./config";
 import { createApp } from './app';
-import { promise } from 'zod';
 import { registerDependencies } from './bootstrap';
 async function startServer(): Promise<void> {
     try {

@@ -6,7 +6,7 @@ dotenv.config();
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
   PORT: z.string().default('4000'),
-  APP_NAME: z.string().default('ecommerce-api'),
+  APP_NAME: z.string().default('itemsvault-api'),
   API_VERSION: z.string().default('v1'),
 
   // Database
