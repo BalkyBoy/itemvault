@@ -7,6 +7,8 @@ export function CategoryAnalytics({
   categories: { category: string; count: number }[];
   total: number;
 }) {
+
+  const top = [...categories].sort((a, b) => b.count - a.count).slice(0, 5);
   return (
     <Card hover={false}>
       <h2 className="text-base font-semibold text-[#111111]">Category analytics</h2>
@@ -18,7 +20,7 @@ export function CategoryAnalytics({
         </p>
       ) : (
         <ul className="mt-6 space-y-5">
-          {categories.map(({ category, count }) => {
+          {top.map(({ category, count }) => {
             const percent = total > 0 ? Math.round((count / total) * 100) : 0;
             return (
               <li key={category}>

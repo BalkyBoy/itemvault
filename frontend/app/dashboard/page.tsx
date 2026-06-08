@@ -23,6 +23,11 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
+  useEffect(() => {
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+}, []);
+
   const loading = loadingItems || loadingStats;
   const categories = groupByCategory(recentItems);
 
