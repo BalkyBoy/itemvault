@@ -32,10 +32,16 @@ export default defineConfig({
     };
   },
   async onSuccess() {
-    const src = resolve('src/database/migrations');
-    const dest = resolve('dist/database/migrations');
-    mkdirSync(dest, { recursive: true });
-    cpSync(src, dest, { recursive: true });
-    console.log('Migrations copied to dist/database/migrations');
-  },
+  const dirs = [
+    ['src/database/migrations', 'dist/database/migrations'],
+    ['src/database/seeds',      'dist/database/seeds'],
+  ];
+
+  for (const [src, dest] of dirs) {
+    mkdirSync(resolve(dest), { recursive: true });
+    cpSync(resolve(src), resolve(dest), { recursive: true });
+  }
+
+  console.log('✓ Migrations and seeds copied to dist/');
+},
 });
