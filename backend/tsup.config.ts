@@ -1,4 +1,6 @@
 import { defineConfig } from 'tsup';
+import { cpSync, mkdirSync } from 'fs';
+import { resolve } from 'path';
 
 export default defineConfig({
   entry: ['src/server.ts'],
@@ -9,20 +11,15 @@ export default defineConfig({
   splitting: false,
   treeshake: false,
   external: [
-    // External dependencies that should not be bundled
-    // Native/binary modules
     'sharp',
     'pg',
     'pg-native',
-    // Database
     'knex',
     'objection',
     'pino',
     'pino-pretty',
   ],
-  noExternal: [
-
-  ],
+  noExternal: [],
   esbuildOptions(options) {
     options.alias = {
       '@': './src',
@@ -33,5 +30,12 @@ export default defineConfig({
       '@shared': './src/shared',
       '@jobs': './src/jobs',
     };
+  },
+  async onSuccess() {
+    const src = resolve('src/database/migrations');
+    const dest = resolve('dist/database/migrations');
+    mkdirSync(dest, { recursive: true });
+    cpSync(src, dest, { recursive: true });
+    console.log('Migrations copied to dist/database/migrations');
   },
 });
